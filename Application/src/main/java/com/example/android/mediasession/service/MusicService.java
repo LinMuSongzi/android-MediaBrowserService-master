@@ -27,6 +27,7 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.LoginFilter;
 import android.util.Log;
 
 import com.example.android.mediasession.service.contentcatalogs.MusicLibrary;
@@ -49,15 +50,15 @@ public class MusicService extends MediaBrowserServiceCompat {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.i(TAG, "onCreate: ");
         // Create a new MediaSession.
         mSession = new MediaSessionCompat(this, "MusicService");
         mCallback = new MediaSessionCallback();
         mSession.setCallback(mCallback);
         mSession.setFlags(
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS |
-                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+                        MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS |
+                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         setSessionToken(mSession.getSessionToken());
 
         mMediaNotificationManager = new MediaNotificationManager(this);
@@ -69,11 +70,13 @@ public class MusicService extends MediaBrowserServiceCompat {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
+        Log.i(TAG, "onTaskRemoved: ");
         stopSelf();
     }
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "onDestroy: ");
         mMediaNotificationManager.onDestroy();
         mPlayback.stop();
         mSession.release();
@@ -84,6 +87,7 @@ public class MusicService extends MediaBrowserServiceCompat {
     public BrowserRoot onGetRoot(@NonNull String clientPackageName,
                                  int clientUid,
                                  Bundle rootHints) {
+        Log.i(TAG, "onGetRoot: String = " + clientUid + "  clientUid = " + clientUid + "  rootHints = " + rootHints);
         return new BrowserRoot(MusicLibrary.getRoot(), null);
     }
 
@@ -91,6 +95,7 @@ public class MusicService extends MediaBrowserServiceCompat {
     public void onLoadChildren(
             @NonNull final String parentMediaId,
             @NonNull final Result<List<MediaBrowserCompat.MediaItem>> result) {
+        Log.i(TAG, "onLoadChildren: parentMediaId = " + parentMediaId + "  result = " + result);
         result.sendResult(MusicLibrary.getMediaItems());
     }
 
@@ -104,16 +109,19 @@ public class MusicService extends MediaBrowserServiceCompat {
         public void onAddQueueItem(MediaDescriptionCompat description) {
             mPlaylist.add(new MediaSessionCompat.QueueItem(description, description.hashCode()));
             mQueueIndex = (mQueueIndex == -1) ? 0 : mQueueIndex;
+            Log.i(TAG, "onAddQueueItem: description = " + description);
         }
 
         @Override
         public void onRemoveQueueItem(MediaDescriptionCompat description) {
             mPlaylist.remove(new MediaSessionCompat.QueueItem(description, description.hashCode()));
             mQueueIndex = (mPlaylist.isEmpty()) ? -1 : mQueueIndex;
+            Log.i(TAG, "onRemoveQueueItem: description = " + description);
         }
 
         @Override
         public void onPrepare() {
+            Log.i(TAG, "onPrepare: ");
             if (mQueueIndex < 0 && mPlaylist.isEmpty()) {
                 // Nothing to play.
                 return;
@@ -130,6 +138,7 @@ public class MusicService extends MediaBrowserServiceCompat {
 
         @Override
         public void onPlay() {
+            Log.i(TAG, "onPlay: ");
             if (!isReadyToPlay()) {
                 // Nothing to play.
                 return;
@@ -145,17 +154,20 @@ public class MusicService extends MediaBrowserServiceCompat {
 
         @Override
         public void onPause() {
+            Log.i(TAG, "onPause: ");
             mPlayback.pause();
         }
 
         @Override
         public void onStop() {
+            Log.i(TAG, "onStop: ");
             mPlayback.stop();
             mSession.setActive(false);
         }
 
         @Override
         public void onSkipToNext() {
+            Log.i(TAG, "onSkipToNext: ");
             mQueueIndex = (++mQueueIndex % mPlaylist.size());
             mPreparedMedia = null;
             onPlay();
@@ -163,6 +175,7 @@ public class MusicService extends MediaBrowserServiceCompat {
 
         @Override
         public void onSkipToPrevious() {
+            Log.i(TAG, "onSkipToPrevious: ");
             mQueueIndex = mQueueIndex > 0 ? mQueueIndex - 1 : mPlaylist.size() - 1;
             mPreparedMedia = null;
             onPlay();
@@ -170,10 +183,12 @@ public class MusicService extends MediaBrowserServiceCompat {
 
         @Override
         public void onSeekTo(long pos) {
+            Log.i(TAG, "onSeekTo: pos " + pos);
             mPlayback.seekTo(pos);
         }
 
         private boolean isReadyToPlay() {
+            Log.i(TAG, "isReadyToPlay: ");
             return (!mPlaylist.isEmpty());
         }
     }
@@ -185,10 +200,12 @@ public class MusicService extends MediaBrowserServiceCompat {
 
         MediaPlayerListener() {
             mServiceManager = new ServiceManager();
+            Log.i(TAG, "MediaPlayerListener: ");
         }
 
         @Override
         public void onPlaybackStateChange(PlaybackStateCompat state) {
+            Log.i(TAG, "onPlaybackStateChange: state = " + state);
             // Report the state to the MediaSession.
             mSession.setPlaybackState(state);
 
@@ -209,6 +226,7 @@ public class MusicService extends MediaBrowserServiceCompat {
         class ServiceManager {
 
             private void moveServiceToStartedState(PlaybackStateCompat state) {
+                Log.i(TAG, "moveServiceToStartedState: state = " + state);
                 Notification notification =
                         mMediaNotificationManager.getNotification(
                                 mPlayback.getCurrentMedia(), state, getSessionToken());
@@ -224,6 +242,7 @@ public class MusicService extends MediaBrowserServiceCompat {
             }
 
             private void updateNotificationForPause(PlaybackStateCompat state) {
+                Log.i(TAG, "updateNotificationForPause: state = " + state);
                 stopForeground(false);
                 Notification notification =
                         mMediaNotificationManager.getNotification(
@@ -233,6 +252,7 @@ public class MusicService extends MediaBrowserServiceCompat {
             }
 
             private void moveServiceOutOfStartedState(PlaybackStateCompat state) {
+                Log.i(TAG, "moveServiceOutOfStartedState: state = " + state);
                 stopForeground(true);
                 stopSelf();
                 mServiceInStartedState = false;

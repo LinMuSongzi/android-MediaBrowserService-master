@@ -56,18 +56,30 @@ public class MediaBrowserAdapter {
         }
     }
 
+    /**
+     * 当前媒体文件的状态和文件信息
+     */
     private final InternalState mState;
 
     private final Context mContext;
     private final List<MediaBrowserChangeListener> mListeners = new ArrayList<>();
 
+    /**
+     * 连接回调
+     */
     private final MediaBrowserConnectionCallback mMediaBrowserConnectionCallback =
             new MediaBrowserConnectionCallback();
+    /**
+     * 控制器回调
+     */
     private final MediaControllerCallback mMediaControllerCallback =
             new MediaControllerCallback();
     private final MediaBrowserSubscriptionCallback mMediaBrowserSubscriptionCallback =
             new MediaBrowserSubscriptionCallback();
 
+    /**
+     * 媒体客户端
+     */
     private MediaBrowserCompat mMediaBrowser;
 
     @Nullable

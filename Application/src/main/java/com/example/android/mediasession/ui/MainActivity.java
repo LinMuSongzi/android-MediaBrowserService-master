@@ -22,6 +22,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,7 +33,7 @@ import com.example.android.mediasession.client.MediaBrowserAdapter;
 import com.example.android.mediasession.service.contentcatalogs.MusicLibrary;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String TAG = MediaBrowserAdapter.class.getSimpleName();
     private ImageView mAlbumArt;
     private TextView mTitleTextView;
     private TextView mArtistTextView;
@@ -50,9 +51,11 @@ public class MainActivity extends AppCompatActivity {
         initializeUI();
         mMediaBrowserAdapter = new MediaBrowserAdapter(this);
         mMediaBrowserAdapter.addListener(new MediaBrowserListener());
+        Log.i(TAG, "onCreate: ");
     }
 
     private void initializeUI() {
+        Log.i(TAG, "initializeUI: ");
         mTitleTextView = (TextView) findViewById(R.id.song_title);
         mArtistTextView = (TextView) findViewById(R.id.song_artist);
         mAlbumArt = (ImageView) findViewById(R.id.album_art);
@@ -71,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
+                 * 播放与停止
+                 */
                 if (mIsPlaying) {
                     mMediaBrowserAdapter.getTransportControls().pause();
                 } else {
@@ -88,29 +94,49 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 管理音乐播放器activity声明周期
+     */
     @Override
     public void onStart() {
         super.onStart();
+        Log.i(TAG, "onStart: MainActivity");
         mMediaBrowserAdapter.onStart();
     }
 
+    /**
+     * 管理音乐播放器activity声明周期
+     */
     @Override
     public void onStop() {
         super.onStop();
+        Log.i(TAG, "onStop: MainActivity");
         mSeekBarAudio.disconnectController();
         mMediaBrowserAdapter.onStop();
     }
 
     private class MediaBrowserListener extends MediaBrowserAdapter.MediaBrowserChangeListener {
 
+        /**
+         * 连接获取播放器connext
+         *
+         * @param mediaController
+         */
         @Override
         public void onConnected(@Nullable MediaControllerCompat mediaController) {
             super.onConnected(mediaController);
+            Log.i(TAG, "onConnected: MainActivity");
             mSeekBarAudio.setMediaController(mediaController);
         }
 
+        /**
+         * 音乐播放状态回调
+         *
+         * @param playbackState
+         */
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat playbackState) {
+            Log.i(TAG, "onPlaybackStateChanged: MainActivity  playbackState = " + playbackState);
             mIsPlaying = playbackState != null &&
                     playbackState.getState() == PlaybackStateCompat.STATE_PLAYING;
             mMediaControlsImage.setPressed(mIsPlaying);
@@ -118,10 +144,12 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * 音乐播放切换
+         *
          * @param mediaMetadata
          */
         @Override
         public void onMetadataChanged(MediaMetadataCompat mediaMetadata) {
+            Log.i(TAG, "onMetadataChanged: MainActivity  mediaMetadata = " + mediaMetadata);
             if (mediaMetadata == null) {
                 return;
             }
