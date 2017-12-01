@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ic_skip_next_white_24dp.png",
+        "source": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\src\\main\\res\\drawable-hdpi\\ic_skip_next_white_24dp.png"
+    },
+    {
+        "merged": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ic_pause_white_24dp.png",
+        "source": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\src\\main\\res\\drawable-hdpi\\ic_pause_white_24dp.png"
+    },
+    {
+        "merged": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ic_stat_image_audiotrack.png",
+        "source": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\src\\main\\res\\drawable-hdpi\\ic_stat_image_audiotrack.png"
+    },
+    {
+        "merged": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ic_play_arrow_white_24dp.png",
+        "source": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\src\\main\\res\\drawable-hdpi\\ic_play_arrow_white_24dp.png"
+    },
+    {
+        "merged": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ic_skip_previous_white_24dp.png",
+        "source": "F:\\android-MediaBrowserService-master\\android-MediaBrowserService-master\\Application\\src\\main\\res\\drawable-hdpi\\ic_skip_previous_white_24dp.png"
+    }
+]
